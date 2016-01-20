@@ -55,8 +55,11 @@ If **true** `node.d.ts` definitions file is loaded before custom ts files. This 
 
 at the beginning of your ts modules.
 
+### target [string] default: 'ES5'
+Target output mode.
+
 ### targetES5 [boolean] default: true
-Target ES5 / ES3 output mode.
+Target ES5 / ES3 output mode. notice that target option will overwrite this.
 
 # Module Dependencies in TS files
 You can load any other TypeScript or Javascript module from your typescripts. However, you should
