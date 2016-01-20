@@ -5,15 +5,20 @@ var path = require('path');
 var tsc = path.join(path.dirname(require.resolve("typescript")),"tsc.js");
 var tscScript = vm.createScript(fs.readFileSync(tsc, "utf8"), tsc);
 var libPath = path.join(path.dirname(require.resolve("typescript")), "lib.d.ts")
+var libEs6Path = path.join(path.dirname(require.resolve("typescript")), "lib.es6.d.ts")
 
 var options = {
   nodeLib: false,
-  targetES5: true,
+  target: 'ES5',
   moduleKind: 'commonjs',
   exitOnError: true
 };
 
 module.exports = function(opts) {
+  if (!opts.target && opts.targetES5 != undefined) {
+    opts.target = opts.targetES5 ? 'ES5' : 'ES3';
+    delete opts.targetES5;
+  }
   options = merge(options, opts);
 };
 
@@ -43,7 +48,7 @@ function compileTS (module) {
   var tmpDir = path.join(process.cwd(), "tmp", "tsreq");
   var relativeFolder = path.dirname(path.relative(process.cwd(), module.filename));
   var jsname = path.join(tmpDir, relativeFolder, path.basename(module.filename, ".ts") + ".js");
-  
+
   if (!isModified(module.filename, jsname)) {
     return jsname;
   }
@@ -53,10 +58,12 @@ function compileTS (module) {
     "tsc.js",
     "--nolib",
     "--target",
-    options.targetES5 ? "ES5" : "ES3", !! options.moduleKind ? "--module" : "", !! options.moduleKind ? options.moduleKind : "",
+    options.target,
+    !!options.moduleKind ? "--module" : "",
+    !!options.moduleKind ? options.moduleKind : "",
     "--outDir",
     path.join(tmpDir, relativeFolder),
-    libPath,
+    options.target == 'ES6' ? libEs6Path : libPath,
     options.nodeLib ? path.resolve(__dirname, "typings/node.d.ts") : null,
     module.filename
   ];
