@@ -58,6 +58,7 @@ function compileTS (module) {
     "node",
     "tsc.js",
     "--nolib",
+    options.exitOnError ? "--noEmitOnError" : null,
     "--target",
     options.target,
     !!options.moduleKind ? "--module" : "",
