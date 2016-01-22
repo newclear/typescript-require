@@ -11,7 +11,8 @@ var options = {
   nodeLib: false,
   target: 'ES5',
   moduleKind: 'commonjs',
-  exitOnError: true
+  exitOnError: true,
+  extraArgs: []
 };
 
 module.exports = function(opts) {
@@ -65,8 +66,13 @@ function compileTS (module) {
     path.join(tmpDir, relativeFolder),
     options.target == 'ES6' ? libEs6Path : libPath,
     options.nodeLib ? path.resolve(__dirname, "typings/node.d.ts") : null,
-    module.filename
   ];
+
+  options.extraArgs.forEach(function(arg) {
+    argv.push(arg);
+  });
+
+  argv.push(module.filename);
 
   var proc = merge(merge({}, process), {
     argv: compact(argv),
