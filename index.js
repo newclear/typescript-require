@@ -63,8 +63,10 @@ function compileTS (module) {
     options.target,
     !!options.moduleKind ? "--module" : "",
     !!options.moduleKind ? options.moduleKind : "",
+    "--rootDir",
+    process.cwd(),
     "--outDir",
-    path.join(tmpDir, relativeFolder),
+    tmpDir,
     options.target == 'ES6' ? libEs6Path : libPath,
     options.nodeLib ? path.resolve(__dirname, "typings/node.d.ts") : null,
   ];
