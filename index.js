@@ -104,20 +104,7 @@ function compileTS (module) {
 
 function runJS (jsname, module) {
   var content = fs.readFileSync(jsname, 'utf8');
-
-  var sandbox = {};
-  for (var k in global) {
-    sandbox[k] = global[k];
-  }
-  sandbox.require = module.require.bind(module);
-  sandbox.exports = module.exports;
-  sandbox.__filename = jsname;
-  sandbox.__dirname = path.dirname(module.filename);
-  sandbox.module = module;
-  sandbox.global = sandbox;
-  sandbox.root = root;
-
-  return vm.runInNewContext(content, sandbox, { filename: jsname });
+  return module._compile(content, jsname);
 }
 
 function merge(a, b) {
